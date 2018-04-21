@@ -3,32 +3,41 @@
 #include <unistd.h>
 #include <signal.h>
 #include <sys/mman.h>
+#include <string.h>
 #define MAX_PIDS 32
 int main()
 {
 	volatile pid_t *pids;
 	int NUM_CHILD = 2;
+			
+	pids = mmap(0, MAX_PIDS*sizeof(pid_t), PROT_READ|PROT_WRITE,
+			MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+	if (!pids) 
+	{
+		printf("mmap failed");
+		return 1;
+	}	
+	pid_t pid;
+	memset((void *)pids, 0, MAX_PIDS*sizeof(pid_t));
 	for (int i = 0; i <= NUM_CHILD; i++)
 	{
-	//	pid_t proc = fork();
-		if (fork() < 0)
+		pid = fork();
+		if (pid < 0)
 		{
 			printf("Not correctly created procces, terminating other proccess\n");
-			pids = mmap(0, MAX_PIDS*sizeof(pid_t), PROT_READ|PROT_WRITE,
-					MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-			if (!pids) 
-			{
-				printf("mmap failed");
-				return 1;
-			}
 		}
 
-		
+		pids[i]=pid;
 		sleep(1);
-		printf("%d,ID: %d \n", i,getpid());
+		//printf("%d,ID: %d \n", i,getpid());
+		
 		
 	}
-
+	for (int i = 0; i <= NUM_CHILD; i++)
+	{
+	printf("dd: %d \n", pids[i]);
+	}
+	
 	sleep(5);
 	return 0;
 }
