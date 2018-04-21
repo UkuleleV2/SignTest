@@ -4,9 +4,13 @@
 #include <signal.h>
 #include <sys/mman.h>
 #include <string.h>
+#include <sys/wait.h>
 #define MAX_PIDS 32
 int main()
 {
+	printf("Test: %d\n",getpid());
+	int bal[32];
+	int c;
 	volatile pid_t *pids;
 	int NUM_CHILD = 2;
 			
@@ -26,10 +30,13 @@ int main()
 		{
 			printf("Not correctly created procces, terminating other proccess\n");
 		}
-
-		pids[i]=pid;
+		else if (pid > 0)
+		{
+			pids[i]=pid;
+		}
+		
 		sleep(1);
-		//printf("%d,ID: %d \n", i,getpid());
+		printf("%d,ID: %d \n", i,getpid());
 		
 		
 	}
@@ -39,6 +46,7 @@ int main()
 	}
 	
 	sleep(5);
+
 	return 0;
 }
 
