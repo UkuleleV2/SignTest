@@ -6,12 +6,13 @@
 #include <string.h>
 #include <sys/wait.h>
 #define MAX_PIDS 32
+volatile pid_t *pids;
 int main()
 {
 	printf("Test: %d\n",getpid());
 	int bal[32];
 	int c;
-	volatile pid_t *pids;
+	pid_t pid;
 	int NUM_CHILD = 2;
 			
 	pids = mmap(0, MAX_PIDS*sizeof(pid_t), PROT_READ|PROT_WRITE,
@@ -21,7 +22,7 @@ int main()
 		printf("mmap failed");
 		return 1;
 	}	
-	pid_t pid;
+	
 	memset((void *)pids, 0, MAX_PIDS*sizeof(pid_t));
 	for (int i = 0; i <= NUM_CHILD; i++)
 	{
@@ -36,15 +37,15 @@ int main()
 		}
 		
 		sleep(1);
-		printf("%d,ID: %d \n", i,getpid());
+	//	printf("%d,ID: %d \n", i,getpid());
 		
 		
 	}
-	for (int i = 0; i <= NUM_CHILD; i++)
-	{
-	printf("dd: %d \n", pids[i]);
-	}
-	
+//	for (int i = 0; i <= NUM_CHILD; i++)
+//	{
+	printf("Id in table: %d \n", pids[1]);
+//	}
+
 	sleep(5);
 
 	return 0;
