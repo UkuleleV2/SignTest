@@ -3,6 +3,9 @@
 #include <unistd.h>
 int main()
 {
-   fork();
-   return 0;
+	pid_t NUMCHILD = fork();
+	sleep(1);
+	printf("Test \n");
+	
+	return 0;
 }
