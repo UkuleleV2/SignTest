@@ -8,21 +8,28 @@
 #define NUM_CHILD 3
 #define WITH_SIGNALS
 	
-void Child()
-{
-	printf("Child[%d], My parent: %d \n", getpid(), getppid());
-	sleep(10);
-	exit(0);
-}
-
-
 static volatile sig_atomic_t interrupt_flag = 0;
 static void set_interrupt_flag(int signo) 
 {
 	printf("Parent[%d]: Signal caught\n", getpid());
 	interrupt_flag = 1;
 }
+void Child_Caught()
+{
+	printf("Child[%d]: This proccess will be terminated.\n", getpid());
+}
 
+void Child()
+{
+	#ifdef WITH_SIGNALS
+	signal(SIGINT, SIG_IGN);
+	signal(SIGTERM, Child_Caught);
+	#endif
+
+	printf("Child[%d], My parent: %d \n", getpid(), getppid());
+	sleep(10);
+	exit(0);
+}
 
 int main()
 {	
@@ -74,7 +81,7 @@ int main()
 		sleep(1);
 	}
 
-
+	sleep(1);
 	printf("Parent[%d]: Waiting for execution\n", getpid());
 	while((pid = wait(&status)) > 0) 
 	{
