@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-//#define WITH_SIGNALS
+#define WITH_SIGNALS
 
 #ifdef WITH_SIGNALS
 
@@ -106,7 +106,7 @@ int main()
     printf("\n\nparent[%d]: There are no more child processes. \n", (int) getpid());
     printf("parent[%d]: Thre has been %d childs executed\n", (int) getpid(),child_executed);
 
- /*   #ifdef WITH_SIGNALS
+  /*  #ifdef WITH_SIGNALS
 	for(int i = 0; i < NSIG; i++)
 		signal(i, SIG_DFL);
 	#endif*/
