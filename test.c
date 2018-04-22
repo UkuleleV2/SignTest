@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define WITH_SIGNALS
+//#define WITH_SIGNALS
 
 #ifdef WITH_SIGNALS
 
@@ -55,10 +55,10 @@ int main()
 
 	signal(SIGINT, parent_handler);
 	#endif
+	int i;
+    for(i=0;i<NUM_CHILD;i++){
 
-    for(int i=0;i<NUM_CHILD;i++){
-
-            #ifdef WITH_SIGNALS
+           #ifdef WITH_SIGNALS
             if(set_signal_parent) {
                 printf("\nparent[%d]:  Terminating signal was caught by parent. Creation of new childs will be abandoned.\n", getpid());
                 for(int g=0; g<child_number;g++)
@@ -90,8 +90,14 @@ int main()
         child_number++;
     }
 
-    printf("\n\nparent[%d]: Waiting for child proccesses to be executed\n\n");
+		for (int z = 0; z<NUM_CHILD; z++)
+	{
+		printf("Well: %d \n", pid_numbers[z]);
+	}
 
+
+    printf("\n\nparent[%d]: Waiting for child proccesses to be executed\n\n");
+	printf("%d, %d \n", i, child_number);
     while((pid = wait(&status)) != -1) {
         printf("parent[%d]: Child %d has been terminated.\n", (int) getpid(),(int) pid);
         child_executed++;
@@ -100,10 +106,10 @@ int main()
     printf("\n\nparent[%d]: There are no more child processes. \n", (int) getpid());
     printf("parent[%d]: Thre has been %d childs executed\n", (int) getpid(),child_executed);
 
-    #ifdef WITH_SIGNALS
+ /*   #ifdef WITH_SIGNALS
 	for(int i = 0; i < NSIG; i++)
 		signal(i, SIG_DFL);
-	#endif
+	#endif*/
 
     return 0;
 }
