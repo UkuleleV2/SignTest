@@ -5,7 +5,7 @@
 #include <sys/wait.h>
 #include <stdlib.h>
 
-#define NUM_CHILD 3
+#define NUM_CHILD 5
 #define WITH_SIGNALS
 	
 static volatile sig_atomic_t interrupt_flag = 0;
@@ -14,16 +14,16 @@ static void set_interrupt_flag(int signo)
 	printf("Parent[%d]: Signal caught\n", getpid());
 	interrupt_flag = 1;
 }
-void Child_Caught()
+void child_caught(int signo)
 {
 	printf("Child[%d]: This proccess will be terminated.\n", getpid());
 }
 
-void Child()
+void child()
 {
 	#ifdef WITH_SIGNALS
 	signal(SIGINT, SIG_IGN);
-	signal(SIGTERM, Child_Caught);
+	signal(SIGTERM, child_caught);
 	#endif
 
 	printf("Child[%d], My parent: %d \n", getpid(), getppid());
@@ -60,10 +60,11 @@ int main()
 		}
 		#endif
 		pid = fork();
-		if ( pid != 0)
+		if ( pid > 0)
 		{
 			arr[i] = pid;
 		}
+
 		if (pid < 0)
 		{
 			printf("Parent[%d]: Not correctly created procces, terminating other proccess\n",getpid());	
@@ -76,7 +77,7 @@ int main()
 		}
 		else if (pid == 0)
 		{			
-			Child();
+			child();
 		}
 		sleep(1);
 	}
